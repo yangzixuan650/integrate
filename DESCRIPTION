@@ -1,9 +1,11 @@
 Package: integrate
-Title: What the Package Does (One Line, Title Case)
+Title: Numerical integration
 Version: 0.0.0.9000
 Authors@R: 
     person("Zixuan", "Yang", , "zyang548@uwo.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: Use Riemann, trapezoid, and Simpson's method to compute the 
+numerical integration of a generic function. Assume that the function is integrable 
+on the given domain. 
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
