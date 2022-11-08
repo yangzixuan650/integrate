@@ -1,5 +1,5 @@
 Package: integrate
-Title: Numerical integration
+Title: Numerical_integration
 Version: 0.0.0.9000
 Authors@R: 
     person("Zixuan", "Yang", , "zyang548@uwo.com", role = c("aut", "cre"))
