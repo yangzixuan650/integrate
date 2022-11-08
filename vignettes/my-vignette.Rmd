@@ -17,3 +17,159 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(integrate)
 ```
+
+
+
+
+In this demo, we will show how to use the functions inside this package to integrate the function $f(x)=\sqrt{x}$ over the interval $(0,1)$.
+
+
+```{r}
+# The function to be integrated:
+func <- function(x){
+  return(sqrt(x))
+}
+
+riemann(func, c(0,1), 100)
+```
+
+
+
+```{r}
+print(trapezoid(func, c(0,1), 100))
+```
+
+
+```{r}
+print(simpsons(func, c(0,1), 100))
+```
+
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+
+
+plot_df1 <- tibble(x = seq(0, 1, 0.01), f = func(x))
+
+plot_df2 <- plot_df1 %>%
+  filter(x <= 1) %>%
+  bind_rows(tibble(x = 1, f = 0)) 
+
+
+
+plot1 <- plot_df1 %>%
+  ggplot(aes(x = x, y = f)) + 
+  geom_line(colour = "blue") +
+  ylab("Target Function") + 
+  geom_hline(yintercept = 0)+
+  geom_polygon(data = plot_df2, fill = "blue", alpha = .5)
+
+riemann <- tibble(n = 10,
+                  x = seq(0, 1, length = n+1)[-(n+1)],
+                  f = func(x)) %>%
+  mutate(x = x + 1/(2*n))
+
+# Compare the approximation with the function
+plot1 + 
+  geom_bar(data = riemann, aes(x = x, y = f), stat = "identity", 
+           fill = "red",alpha = .5, width = 1/10) +
+  geom_vline(xintercept = 1) +
+  ggtitle("Riemann Integration")
+```
+
+
+
+```{r}
+plot2 <- plot_df1 %>%
+  ggplot(aes(x = x, y = f)) + 
+  geom_line(colour = "blue") +
+  ylab("Target Function") + 
+  geom_hline(yintercept = 0)+
+  geom_polygon(data = plot_df2, fill = "blue", alpha = .5)
+
+trapezoid <- tibble(n = 10,
+                  x = seq(0, 1, length = n+1),
+                  f = func(x)) %>%
+  bind_rows(tibble(n = 10,
+                   x = 1,
+                   f = 0))
+
+# Compare the approximation with the function
+plot1 + 
+  geom_polygon(data = trapezoid, aes(x = x, y = f), fill = "red", alpha = .5) +
+  ggtitle("Trapezoid Rule")
+```
+
+
+
+
+
+```{r}
+riemann1 <- tibble(n = 2^(2:10)) %>%
+  group_by(n) %>%
+  summarize(x = seq(0, 1, length = n+1)[-(n+1)],
+            f = func(x))
+
+## Compute integral for each value of n
+integration <- riemann1 %>%
+  group_by(n) %>%
+  summarize(Integral = sum(f * 1/n)) %>%
+  add_column(Method = "Riemann", .before = 1) %>%
+  mutate(Error = 100 * (Integral - target)/target)
+
+
+trapezoid1 <- tibble(n = 2^(2:10)) %>%
+  group_by(n) %>%
+  summarize(x = seq(0, 1, length = n+1)[-(n+1)],
+            x1 = seq(0, 1, length = n+1)[-1],
+            f = func(x),
+            f1 = func(x1))
+
+integration <- trapezoid1 %>%
+  group_by(n) %>%
+  summarize(Integral = sum((f + f1)/2 * 1/n)) %>%
+  add_column(Method = "Trapezoid", .before = 1) %>%
+  mutate(Error = 100 * (Integral - target)/target) %>%
+  bind_rows(integration)
+
+
+simpsons1 <- tibble(n = 2^(2:10)) %>%
+  group_by(n) %>%
+  summarize(x = seq(0, 1, length = n+1)[-(n+1)],
+            x1 = x + 1/(2*n),
+            x2 = x1 + 1/(2*n),
+            f = func(x),
+            f1 = func(x1),
+            f2 = func(x2))
+
+integration <- simpsons1 %>%
+  group_by(n) %>%
+  summarize(Integral = sum(1/(6*n) * (f + 4*f1 + f2))) %>%
+  add_column(Method = "Simpsons", .before = 1) %>%
+  mutate(Error = 100 * (Integral - target)/target) %>%
+  bind_rows(integration) 
+
+
+# Compare results graphically
+integration <- integration %>%
+   mutate(Operations = case_when(
+    Method == "Trapezoid" ~ n,
+    Method == "Riemann" ~ n+1,
+    Method == "Simpsons" ~ 2*n + 1
+  )) 
+
+integration %>%
+  ggplot(aes(x = Operations, y = Integral, colour = Method)) + 
+  geom_line() +
+  scale_x_continuous(trans = "log", breaks = 2^(2:10)) +
+  ggtitle("Comparison of the three different methods")
+
+```
+
+
+
+
+
+
