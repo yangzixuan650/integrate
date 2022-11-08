@@ -1,3 +1,13 @@
+#' Title
+#'
+#' @param f
+#' @param range
+#' @param n
+#'
+#' @return
+#' @export
+#'
+#' @examples
 simpsons <- function(f, range, n){
   a <- range[1]
   b <- range[2]
