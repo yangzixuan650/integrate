@@ -1,3 +1,13 @@
+#' Approximate an integrable function by Riemann sum
+#'
+#' @param f
+#' @param range
+#' @param n
+#'
+#' @return
+#' @export
+#'
+#' @examples
 riemann <- function(f, range, n){
   # approximate a function by Riemann sum
   res <- 0
