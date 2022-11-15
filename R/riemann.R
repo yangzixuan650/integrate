@@ -1,13 +1,17 @@
 #' Approximate an integrable function by Riemann sum
 #'
-#' @param f
-#' @param range
-#' @param n
+#' @param f a function to be integrated
+#' @param range integration range
+#' @param n number of intervals
 #'
-#' @return
+#' @return integration result
 #' @export
 #'
 #' @examples
+#' # A function to be integrated:
+#' f <- function(x) {return(sqrt(x))}
+#' res <- riemann(f, c(0,1), 10)
+#'
 riemann <- function(f, range, n){
   # approximate a function by Riemann sum
   res <- 0

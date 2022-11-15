@@ -1,13 +1,17 @@
-#' Title
+#' Simpsons method
 #'
-#' @param f
-#' @param range
-#' @param n
+#' @param f a function to be integrated
+#' @param range integration range
+#' @param n number of intervals
 #'
-#' @return
+#' @return integration result
 #' @export
 #'
 #' @examples
+#' # A function to be integrated:
+#' f <- function(x) {return(sqrt(x))}
+#' res <- simpsons(f, c(0,1), 10)
+#'
 simpsons <- function(f, range, n){
   a <- range[1]
   b <- range[2]

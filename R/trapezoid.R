@@ -1,13 +1,17 @@
-#' Title
+#' Trapezoid rule
 #'
-#' @param f
-#' @param range
-#' @param n
+#' @param f a function to be integrated
+#' @param range integration range
+#' @param n number of intervals
 #'
-#' @return
+#' @return integration result
 #' @export
 #'
 #' @examples
+#' # A function to be integrated:
+#' f <- function(x) {return(sqrt(x))}
+#' res <- trapezoid(f, c(0,1), 10)
+#'
 trapezoid <- function(f, range, n){
   res <- 0
   a <- range[1]
